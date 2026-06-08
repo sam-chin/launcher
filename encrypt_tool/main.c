@@ -5,6 +5,11 @@
 #include "../common/file_pack/file_pack.h"
 #include "../common/encrypt/encrypt.h"
 
+static void set_console_encoding() {
+    SetConsoleCP(65001);
+    SetConsoleOutputCP(65001);
+}
+
 static int is_directory(const char* path) {
     DWORD attrs = GetFileAttributesA(path);
     return (attrs != INVALID_FILE_ATTRIBUTES && (attrs & FILE_ATTRIBUTE_DIRECTORY));
@@ -117,7 +122,7 @@ static void interactive_mode() {
 }
 
 int main(int argc, char* argv[]) {
-    SetConsoleOutputCP(65001);
+    set_console_encoding();
     
     if (argc == 1) {
         interactive_mode();

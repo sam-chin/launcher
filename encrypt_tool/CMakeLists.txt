@@ -18,5 +18,6 @@ target_include_directories(encrypt_tool PRIVATE
 
 if(MSVC)
     target_compile_definitions(encrypt_tool PRIVATE _WIN32_WINNT=0x0601)
-    target_compile_options(encrypt_tool PRIVATE /W3)
+    target_compile_options(encrypt_tool PRIVATE /W3 /utf-8)
+    set_source_files_properties(main.c PROPERTIES COMPILE_OPTIONS "/utf-8")
 endif()
