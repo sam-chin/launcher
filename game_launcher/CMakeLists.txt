@@ -26,5 +26,6 @@ target_link_libraries(game_launcher PRIVATE
 )
 
 if(MSVC)
+    target_compile_definitions(game_launcher PRIVATE _AFXDLL)
     target_compile_options(game_launcher PRIVATE /W3)
 endif()

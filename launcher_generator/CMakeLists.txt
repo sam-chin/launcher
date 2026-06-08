@@ -20,5 +20,6 @@ target_link_libraries(launcher_generator PRIVATE
 )
 
 if(MSVC)
+    target_compile_definitions(launcher_generator PRIVATE _AFXDLL)
     target_compile_options(launcher_generator PRIVATE /W3)
 endif()
