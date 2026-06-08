@@ -29,6 +29,8 @@ if(MSVC)
     target_compile_definitions(game_launcher PRIVATE 
         _AFXDLL 
         _WIN32_WINNT=0x0601
+        _UNICODE
+        UNICODE
     )
-    target_compile_options(game_launcher PRIVATE /W3)
+    target_compile_options(game_launcher PRIVATE /W3 /utf-8)
 endif()

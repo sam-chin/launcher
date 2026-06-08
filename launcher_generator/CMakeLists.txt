@@ -23,6 +23,8 @@ if(MSVC)
     target_compile_definitions(launcher_generator PRIVATE 
         _AFXDLL
         _WIN32_WINNT=0x0601
+        _UNICODE
+        UNICODE
     )
-    target_compile_options(launcher_generator PRIVATE /W3)
+    target_compile_options(launcher_generator PRIVATE /W3 /utf-8)
 endif()

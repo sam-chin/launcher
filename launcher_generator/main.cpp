@@ -97,16 +97,16 @@ void CGeneratorDlg::SaveConfigFromUI() {
 
 void CGeneratorDlg::OnSaveBtn() {
     SaveConfigFromUI();
-    MessageBox(_T("配置已保存!"), _T("提示"), MB_OK | MB_ICONINFORMATION);
+    MessageBox(_T("Config saved!"), _T("Info"), MB_OK | MB_ICONINFORMATION);
 }
 
 void CGeneratorDlg::OnLoadBtn() {
-    MessageBox(_T("配置加载功能需实现!"), _T("提示"), MB_OK | MB_ICONINFORMATION);
+    MessageBox(_T("Load config function needs implementation!"), _T("Info"), MB_OK | MB_ICONINFORMATION);
 }
 
 void CGeneratorDlg::OnGenerateBtn() {
     SaveConfigFromUI();
-    MessageBox(_T("生成登录器功能需完整实现!"), _T("提示"), MB_OK | MB_ICONINFORMATION);
+    MessageBox(_T("Generate launcher function needs full implementation!"), _T("Info"), MB_OK | MB_ICONINFORMATION);
 }
 
 void CGeneratorDlg::OnOpenDirBtn() {

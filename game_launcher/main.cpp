@@ -1,6 +1,5 @@
 #include <afxwin.h>
 #include <afxcmn.h>
-#include <afxconv.h>
 #include "resource.h"
 #include "config.h"
 #include "dll_loader.h"
@@ -39,7 +38,7 @@ private:
     CListBox m_serverList;
     CProgressCtrl m_progressBar;
     CStatic m_statusText;
-    CStringW m_selectedServerIP;
+    CString m_selectedServerIP;
     int m_selectedServerPort;
 };
 
@@ -80,23 +79,19 @@ BOOL CMainDlg::OnInitDialog() {
     m_progressBar.SetRange(0, 100);
     m_progressBar.SetPos(0);
 
-    SetStatusText(_T("正在初始化..."));
+    SetStatusText(_T("Initializing..."));
     LoadServerList();
 
-    SetStatusText(_T("就绪"));
+    SetStatusText(_T("Ready"));
     return TRUE;
 }
 
 void CMainDlg::LoadServerList() {
     m_serverList.ResetContent();
     
-    CString server1 = _T("服务器1 - 192.168.1.100:7000 [正常]");
-    CString server2 = _T("服务器2 - 192.168.1.101:7000 [正常]");
-    CString server3 = _T("服务器3 - 192.168.1.102:7000 [维护中]");
-    
-    m_serverList.AddString(server1);
-    m_serverList.AddString(server2);
-    m_serverList.AddString(server3);
+    m_serverList.AddString(_T("Server 1 - 192.168.1.100:7000 [Online]"));
+    m_serverList.AddString(_T("Server 2 - 192.168.1.101:7000 [Online]"));
+    m_serverList.AddString(_T("Server 3 - 192.168.1.102:7000 [Maintenance]"));
     
     m_serverList.SetCurSel(0);
     m_selectedServerIP = _T("192.168.1.100");
@@ -124,10 +119,10 @@ void CMainDlg::OnRegisterBtn() {
 }
 
 void CMainDlg::OnStartGame() {
-    SetStatusText(_T("正在检查更新..."));
+    SetStatusText(_T("Checking updates..."));
     UpdatePatch();
     
-    SetStatusText(_T("正在启动游戏..."));
+    SetStatusText(_T("Starting game..."));
     LaunchGame();
 }
 
@@ -145,12 +140,12 @@ void CMainDlg::UpdatePatch() {
             fread(data, 1, size, f);
             fclose(f);
             
-            SetStatusText(_T("正在解密..."));
+            SetStatusText(_T("Decrypting..."));
             m_progressBar.SetPos(30);
             
             xor_decrypt(data, size, (const uint8_t*)m_config.patch_key, strlen(m_config.patch_key));
             
-            SetStatusText(_T("正在解包..."));
+            SetStatusText(_T("Unpacking..."));
             m_progressBar.SetPos(60);
             
             FilePack* pack = file_pack_unpack(data, size);
@@ -164,7 +159,7 @@ void CMainDlg::UpdatePatch() {
                     *last_slash = '\0';
                 }
                 
-                SetStatusText(_T("正在应用补丁..."));
+                SetStatusText(_T("Applying patch..."));
                 m_progressBar.SetPos(80);
                 
                 file_pack_extract(pack, exe_path);
@@ -188,9 +183,9 @@ void CMainDlg::LaunchGame() {
     sprintf_s(client_full_path, MAX_PATH, "%s\\%s", exe_path, m_config.client_path);
     
     char args[1024];
-    USES_CONVERSION;
+    CStringA ipStr(m_selectedServerIP);
     sprintf_s(args, 1024, "ur;name=Player;ip=%s;port=%d;ra=163.com", 
-              W2A(m_selectedServerIP), m_selectedServerPort);
+              (LPCSTR)ipStr, m_selectedServerPort);
     
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;
@@ -200,7 +195,7 @@ void CMainDlg::LaunchGame() {
     
     if (!CreateProcessA(client_full_path, args, NULL, NULL, FALSE, 
                         CREATE_SUSPENDED, NULL, exe_path, &si, &pi)) {
-        MessageBox(_T("启动游戏失败!"), _T("错误"), MB_OK | MB_ICONERROR);
+        MessageBox(_T("Failed to start game!"), _T("Error"), MB_OK | MB_ICONERROR);
         return;
     }
     
