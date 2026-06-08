@@ -86,29 +86,37 @@ void CGeneratorDlg::LoadConfigToUI() {
 }
 
 void CGeneratorDlg::SaveConfigFromUI() {
-    CW2A websiteStr(m_websiteEdit.GetWindowTextW());
-    strcpy_s(m_config.website_url, websiteStr);
+    CString websiteStr = m_websiteEdit.GetWindowText();
+    CW2A websiteStrA(websiteStr);
+    strcpy_s(m_config.website_url, websiteStrA);
 
-    CW2A rechargeStr(m_rechargeEdit.GetWindowTextW());
-    strcpy_s(m_config.recharge_url, rechargeStr);
+    CString rechargeStr = m_rechargeEdit.GetWindowText();
+    CW2A rechargeStrA(rechargeStr);
+    strcpy_s(m_config.recharge_url, rechargeStrA);
 
-    CW2A supportStr(m_supportEdit.GetWindowTextW());
-    strcpy_s(m_config.support_url, supportStr);
+    CString supportStr = m_supportEdit.GetWindowText();
+    CW2A supportStrA(supportStr);
+    strcpy_s(m_config.support_url, supportStrA);
 
-    CW2A registerStr(m_registerEdit.GetWindowTextW());
-    strcpy_s(m_config.register_url, registerStr);
+    CString registerStr = m_registerEdit.GetWindowText();
+    CW2A registerStrA(registerStr);
+    strcpy_s(m_config.register_url, registerStrA);
 
-    CW2A serverListStr(m_serverListEdit.GetWindowTextW());
-    strcpy_s(m_config.server_list_url, serverListStr);
+    CString serverListStr = m_serverListEdit.GetWindowText();
+    CW2A serverListStrA(serverListStr);
+    strcpy_s(m_config.server_list_url, serverListStrA);
 
-    CW2A patchStr(m_patchEdit.GetWindowTextW());
-    strcpy_s(m_config.local_patch_path, patchStr);
+    CString patchStr = m_patchEdit.GetWindowText();
+    CW2A patchStrA(patchStr);
+    strcpy_s(m_config.local_patch_path, patchStrA);
 
-    CW2A patchKeyStr(m_patchKeyEdit.GetWindowTextW());
-    strcpy_s(m_config.patch_key, patchKeyStr);
+    CString patchKeyStr = m_patchKeyEdit.GetWindowText();
+    CW2A patchKeyStrA(patchKeyStr);
+    strcpy_s(m_config.patch_key, patchKeyStrA);
 
-    CW2A clientStr(m_clientEdit.GetWindowTextW());
-    strcpy_s(m_config.client_path, clientStr);
+    CString clientStr = m_clientEdit.GetWindowText();
+    CW2A clientStrA(clientStr);
+    strcpy_s(m_config.client_path, clientStrA);
 }
 
 void CGeneratorDlg::OnSaveBtn() {

@@ -33,5 +33,5 @@ if(MSVC)
         UNICODE
     )
     target_compile_options(game_launcher PRIVATE /W3 /utf-8)
-    target_link_options(game_launcher PRIVATE /SUBSYSTEM:WINDOWS)
+    # 不设置 SUBSYSTEM，让 MFC 自己处理入口点
 endif()

@@ -184,9 +184,10 @@ void CMainDlg::LaunchGame() {
     sprintf_s(client_full_path, MAX_PATH, "%s\\%s", exe_path, m_config.client_path);
     
     char args[1024];
-    CW2A ipStr(m_selectedServerIP);
+    CString ipStr = m_selectedServerIP;
+    CW2A ipStrA(ipStr);
     sprintf_s(args, 1024, "ur;name=Player;ip=%s;port=%d;ra=163.com", 
-              (LPCSTR)ipStr, m_selectedServerPort);
+              (LPCSTR)ipStrA, m_selectedServerPort);
     
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;
