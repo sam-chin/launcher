@@ -1,0 +1,29 @@
+name: Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Configure CMake
+      run: cmake -B build -S . -A Win32
+
+    - name: Build
+      run: cmake --build build --config Release
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: game_launcher_build
+        path: build/Release/
