@@ -1,4 +1,5 @@
 #include <afxwin.h>
+#include <afxcmn.h>
 #include "resource.h"
 #include "config.h"
 #include "dll_loader.h"
@@ -37,7 +38,7 @@ private:
     CListBox m_serverList;
     CProgressCtrl m_progressBar;
     CStatic m_statusText;
-    CString m_selectedServerIP;
+    CStringW m_selectedServerIP;
     int m_selectedServerPort;
 };
 
@@ -186,8 +187,9 @@ void CMainDlg::LaunchGame() {
     sprintf_s(client_full_path, MAX_PATH, "%s\\%s", exe_path, m_config.client_path);
     
     char args[1024];
-    sprintf_s(args, 1024, "ur;name=Player;ip=%S;port=%d;ra=163.com", 
-              m_selectedServerIP, m_selectedServerPort);
+    USES_CONVERSION;
+    sprintf_s(args, 1024, "ur;name=Player;ip=%s;port=%d;ra=163.com", 
+              W2A(m_selectedServerIP), m_selectedServerPort);
     
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;
