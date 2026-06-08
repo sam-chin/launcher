@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <afxres.h>
 #include "resource.h"
 
 IDD_MAIN_DIALOG DIALOGEX 0, 0, 400, 300
@@ -13,7 +14,7 @@ BEGIN
     PUSHBUTTON      "Register",IDC_REGISTER_BTN,186,22,50,25
 
     GROUPBOX        "Notice",IDC_STATIC,7,62,386,60
-    LTEXT           "Welcome to Game Launcher!\nSelect server and click 'Start Game'.",IDC_ANNOUNCEMENT,15,75,370,40
+    LTEXT           "Welcome to Game Launcher!",IDC_ANNOUNCEMENT,15,75,370,40
 
     GROUPBOX        "Server List",IDC_STATIC,7,127,386,100
     LISTBOX         IDC_SERVER_LIST,15,142,370,75,LBS_SORT | WS_VSCROLL | WS_TABSTOP

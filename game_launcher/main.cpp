@@ -1,5 +1,6 @@
 #include <afxwin.h>
 #include <afxcmn.h>
+#include <afxconv.h>
 #include "resource.h"
 #include "config.h"
 #include "dll_loader.h"
@@ -183,7 +184,7 @@ void CMainDlg::LaunchGame() {
     sprintf_s(client_full_path, MAX_PATH, "%s\\%s", exe_path, m_config.client_path);
     
     char args[1024];
-    CStringA ipStr(m_selectedServerIP);
+    CW2A ipStr(m_selectedServerIP);
     sprintf_s(args, 1024, "ur;name=Player;ip=%s;port=%d;ra=163.com", 
               (LPCSTR)ipStr, m_selectedServerPort);
     

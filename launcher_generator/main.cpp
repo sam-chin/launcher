@@ -1,4 +1,5 @@
 #include <afxwin.h>
+#include <afxconv.h>
 #include "resource.h"
 #include "../game_launcher/config.h"
 #include <shlobj.h>
@@ -85,14 +86,29 @@ void CGeneratorDlg::LoadConfigToUI() {
 }
 
 void CGeneratorDlg::SaveConfigFromUI() {
-    m_websiteEdit.GetWindowText(m_config.website_url, MAX_URL_LEN);
-    m_rechargeEdit.GetWindowText(m_config.recharge_url, MAX_URL_LEN);
-    m_supportEdit.GetWindowText(m_config.support_url, MAX_URL_LEN);
-    m_registerEdit.GetWindowText(m_config.register_url, MAX_URL_LEN);
-    m_serverListEdit.GetWindowText(m_config.server_list_url, MAX_URL_LEN);
-    m_patchEdit.GetWindowText(m_config.local_patch_path, MAX_PATH_LEN);
-    m_patchKeyEdit.GetWindowText(m_config.patch_key, MAX_KEY_LEN);
-    m_clientEdit.GetWindowText(m_config.client_path, MAX_PATH_LEN);
+    CW2A websiteStr(m_websiteEdit.GetWindowTextW());
+    strcpy_s(m_config.website_url, websiteStr);
+
+    CW2A rechargeStr(m_rechargeEdit.GetWindowTextW());
+    strcpy_s(m_config.recharge_url, rechargeStr);
+
+    CW2A supportStr(m_supportEdit.GetWindowTextW());
+    strcpy_s(m_config.support_url, supportStr);
+
+    CW2A registerStr(m_registerEdit.GetWindowTextW());
+    strcpy_s(m_config.register_url, registerStr);
+
+    CW2A serverListStr(m_serverListEdit.GetWindowTextW());
+    strcpy_s(m_config.server_list_url, serverListStr);
+
+    CW2A patchStr(m_patchEdit.GetWindowTextW());
+    strcpy_s(m_config.local_patch_path, patchStr);
+
+    CW2A patchKeyStr(m_patchKeyEdit.GetWindowTextW());
+    strcpy_s(m_config.patch_key, patchKeyStr);
+
+    CW2A clientStr(m_clientEdit.GetWindowTextW());
+    strcpy_s(m_config.client_path, clientStr);
 }
 
 void CGeneratorDlg::OnSaveBtn() {
