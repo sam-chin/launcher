@@ -4,6 +4,10 @@
 #include <windows.h>
 #include "config.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef BOOL (*DllInitFunc)();
 typedef void (*DllUninitFunc)();
 
@@ -16,5 +20,9 @@ typedef struct {
 
 int LoadExtensionDlls(const LauncherConfig* config, LoadedDll** out_dlls, int max_dlls);
 void UnloadExtensionDlls(LoadedDll* dlls, int count);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif

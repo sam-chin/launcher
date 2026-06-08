@@ -17,5 +17,6 @@ target_include_directories(encrypt_tool PRIVATE
 )
 
 if(MSVC)
+    target_compile_definitions(encrypt_tool PRIVATE _WIN32_WINNT=0x0601)
     target_compile_options(encrypt_tool PRIVATE /W3)
 endif()

@@ -1,5 +1,6 @@
 #include <afxwin.h>
 #include <afxcmn.h>
+#include <afxconv.h>
 #include "resource.h"
 #include "config.h"
 #include "dll_loader.h"
@@ -24,7 +25,7 @@ protected:
     afx_msg void OnSupportBtn();
     afx_msg void OnRegisterBtn();
     afx_msg void OnStartGame();
-    DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP();
 
 private:
     void LoadServerList();

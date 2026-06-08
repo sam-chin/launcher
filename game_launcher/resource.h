@@ -1,6 +1,7 @@
 #ifndef RESOURCE_H
 #define RESOURCE_H
 
+#define IDC_STATIC -1
 #define IDD_MAIN_DIALOG 101
 #define IDC_SERVER_LIST 1001
 #define IDC_START_GAME 1002

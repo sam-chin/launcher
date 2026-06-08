@@ -8,5 +8,6 @@ add_library(plugin SHARED
 )
 
 if(MSVC)
+    target_compile_definitions(plugin PRIVATE _WIN32_WINNT=0x0601)
     target_compile_options(plugin PRIVATE /W3)
 endif()

@@ -8,6 +8,10 @@
 #define MAX_KEY_LEN 256
 #define MAX_DLL_COUNT 16
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
     char website_url[MAX_URL_LEN];
     char recharge_url[MAX_URL_LEN];
@@ -34,5 +38,9 @@ typedef struct {
 } LauncherConfig;
 
 void LoadDefaultConfig(LauncherConfig* config);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
