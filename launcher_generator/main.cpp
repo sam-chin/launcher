@@ -74,25 +74,25 @@ BOOL CGeneratorDlg::OnInitDialog() {
 }
 
 void CGeneratorDlg::LoadConfigToUI() {
-    m_websiteEdit.SetWindowTextA(m_config.website_url);
-    m_rechargeEdit.SetWindowTextA(m_config.recharge_url);
-    m_supportEdit.SetWindowTextA(m_config.support_url);
-    m_registerEdit.SetWindowTextA(m_config.register_url);
-    m_serverListEdit.SetWindowTextA(m_config.server_list_url);
-    m_patchEdit.SetWindowTextA(m_config.local_patch_path);
-    m_patchKeyEdit.SetWindowTextA(m_config.patch_key);
-    m_clientEdit.SetWindowTextA(m_config.client_path);
+    m_websiteEdit.SetWindowText(CString(m_config.website_url));
+    m_rechargeEdit.SetWindowText(CString(m_config.recharge_url));
+    m_supportEdit.SetWindowText(CString(m_config.support_url));
+    m_registerEdit.SetWindowText(CString(m_config.register_url));
+    m_serverListEdit.SetWindowText(CString(m_config.server_list_url));
+    m_patchEdit.SetWindowText(CString(m_config.local_patch_path));
+    m_patchKeyEdit.SetWindowText(CString(m_config.patch_key));
+    m_clientEdit.SetWindowText(CString(m_config.client_path));
 }
 
 void CGeneratorDlg::SaveConfigFromUI() {
-    m_websiteEdit.GetWindowTextA(m_config.website_url, MAX_URL_LEN);
-    m_rechargeEdit.GetWindowTextA(m_config.recharge_url, MAX_URL_LEN);
-    m_supportEdit.GetWindowTextA(m_config.support_url, MAX_URL_LEN);
-    m_registerEdit.GetWindowTextA(m_config.register_url, MAX_URL_LEN);
-    m_serverListEdit.GetWindowTextA(m_config.server_list_url, MAX_URL_LEN);
-    m_patchEdit.GetWindowTextA(m_config.local_patch_path, MAX_PATH_LEN);
-    m_patchKeyEdit.GetWindowTextA(m_config.patch_key, MAX_KEY_LEN);
-    m_clientEdit.GetWindowTextA(m_config.client_path, MAX_PATH_LEN);
+    m_websiteEdit.GetWindowText(m_config.website_url, MAX_URL_LEN);
+    m_rechargeEdit.GetWindowText(m_config.recharge_url, MAX_URL_LEN);
+    m_supportEdit.GetWindowText(m_config.support_url, MAX_URL_LEN);
+    m_registerEdit.GetWindowText(m_config.register_url, MAX_URL_LEN);
+    m_serverListEdit.GetWindowText(m_config.server_list_url, MAX_URL_LEN);
+    m_patchEdit.GetWindowText(m_config.local_patch_path, MAX_PATH_LEN);
+    m_patchKeyEdit.GetWindowText(m_config.patch_key, MAX_KEY_LEN);
+    m_clientEdit.GetWindowText(m_config.client_path, MAX_PATH_LEN);
 }
 
 void CGeneratorDlg::OnSaveBtn() {

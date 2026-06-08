@@ -27,4 +27,5 @@ if(MSVC)
         UNICODE
     )
     target_compile_options(launcher_generator PRIVATE /W3 /utf-8)
+    target_link_options(launcher_generator PRIVATE /SUBSYSTEM:WINDOWS)
 endif()

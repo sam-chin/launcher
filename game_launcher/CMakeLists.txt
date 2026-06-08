@@ -33,4 +33,5 @@ if(MSVC)
         UNICODE
     )
     target_compile_options(game_launcher PRIVATE /W3 /utf-8)
+    target_link_options(game_launcher PRIVATE /SUBSYSTEM:WINDOWS)
 endif()
