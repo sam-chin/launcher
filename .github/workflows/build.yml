@@ -17,13 +17,18 @@ jobs:
       uses: microsoft/setup-msbuild@v2
 
     - name: Configure CMake
-      run: cmake -B build -S . -A Win32
+      run: cmake -B build -S . -A Win32 -DCMAKE_BUILD_TYPE=Release
 
     - name: Build
       run: cmake --build build --config Release
 
+    - name: Create release package
+      shell: pwsh
+      run: |
+        Compress-Archive -Path build/bin/* -DestinationPath game_launcher_package.zip -Force
+
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: game_launcher_build
-        path: build/Release/
+        name: game_launcher_package
+        path: game_launcher_package.zip
