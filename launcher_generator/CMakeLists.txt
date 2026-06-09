@@ -3,8 +3,6 @@ project(launcher_generator CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 
-find_package(MFC REQUIRED)
-
 add_executable(launcher_generator WIN32
     main.cpp
     launcher_generator.rc
@@ -16,7 +14,6 @@ target_include_directories(launcher_generator PRIVATE
 )
 
 target_link_libraries(launcher_generator PRIVATE
-    ${MFC_LIBRARIES}
     user32
     gdi32
     shell32
@@ -30,4 +27,12 @@ if(MSVC)
         UNICODE
     )
     target_compile_options(launcher_generator PRIVATE /W3 /utf-8)
+    target_link_libraries(launcher_generator PRIVATE 
+        afxwin.lib 
+        afxcwd.lib 
+        afxcmn.lib
+    )
+    set_target_properties(launcher_generator PROPERTIES
+        LINK_FLAGS "/SUBSYSTEM:WINDOWS"
+    )
 endif()

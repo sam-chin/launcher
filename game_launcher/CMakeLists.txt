@@ -3,8 +3,6 @@ project(game_launcher CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 
-find_package(MFC REQUIRED)
-
 add_executable(game_launcher WIN32
     main.cpp
     config.c
@@ -22,7 +20,6 @@ target_include_directories(game_launcher PRIVATE
 )
 
 target_link_libraries(game_launcher PRIVATE
-    ${MFC_LIBRARIES}
     user32
     gdi32
     comctl32
@@ -36,4 +33,12 @@ if(MSVC)
         UNICODE
     )
     target_compile_options(game_launcher PRIVATE /W3 /utf-8)
+    target_link_libraries(game_launcher PRIVATE 
+        afxwin.lib 
+        afxcwd.lib 
+        afxcmn.lib
+    )
+    set_target_properties(game_launcher PROPERTIES
+        LINK_FLAGS "/SUBSYSTEM:WINDOWS"
+    )
 endif()
