@@ -6,6 +6,7 @@
 #include "dll_loader.h"
 #include "../common/file_pack/file_pack.h"
 #include "../common/encrypt/encrypt.h"
+#include <locale.h>
 
 class CLauncherApp : public CWinApp {
 public:
@@ -46,6 +47,7 @@ private:
 CLauncherApp theApp;
 
 BOOL CLauncherApp::InitInstance() {
+    setlocale(LC_ALL, "Chinese");
     CWinApp::InitInstance();
     CMainDlg dlg;
     m_pMainWnd = &dlg;
@@ -69,6 +71,32 @@ CMainDlg::CMainDlg(CWnd* pParent) : CDialog(CMainDlg::IDD, pParent) {
 
 BOOL CMainDlg::OnInitDialog() {
     CDialog::OnInitDialog();
+
+    SetWindowText(_T("游戏登录器"));
+    
+    CWnd* pGroup1 = GetDlgItem(IDC_STATIC);
+    if (pGroup1) pGroup1->SetWindowText(_T("快捷功能"));
+    
+    CWnd* pBtn = GetDlgItem(IDC_WEBSITE_BTN);
+    if (pBtn) pBtn->SetWindowText(_T("官网"));
+    pBtn = GetDlgItem(IDC_RECHARGE_BTN);
+    if (pBtn) pBtn->SetWindowText(_T("充值"));
+    pBtn = GetDlgItem(IDC_SUPPORT_BTN);
+    if (pBtn) pBtn->SetWindowText(_T("客服"));
+    pBtn = GetDlgItem(IDC_REGISTER_BTN);
+    if (pBtn) pBtn->SetWindowText(_T("注册"));
+    
+    CWnd* pGroup2 = GetDlgItem(1008);
+    if (pGroup2) pGroup2->SetWindowText(_T("公告"));
+    
+    CWnd* pStatic = GetDlgItem(IDC_ANNOUNCEMENT);
+    if (pStatic) pStatic->SetWindowText(_T("欢迎使用游戏登录器！"));
+    
+    CWnd* pGroup3 = GetDlgItem(1009);
+    if (pGroup3) pGroup3->SetWindowText(_T("服务器列表"));
+    
+    pBtn = GetDlgItem(IDC_START_GAME);
+    if (pBtn) pBtn->SetWindowText(_T("进入游戏"));
 
     LoadDefaultConfig(&m_config);
     m_dllCount = LoadExtensionDlls(&m_config, &m_loadedDlls, MAX_DLL_COUNT);
