@@ -3,6 +3,9 @@ project(launcher_generator CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 
+# Enable MFC
+set(CMAKE_MFC_FLAG 2)  # 2 = MFC as shared DLL
+
 add_executable(launcher_generator WIN32
     main.cpp
     launcher_generator.rc
@@ -21,18 +24,9 @@ target_link_libraries(launcher_generator PRIVATE
 
 if(MSVC)
     target_compile_definitions(launcher_generator PRIVATE 
-        _AFXDLL
         _WIN32_WINNT=0x0601
         _UNICODE
         UNICODE
     )
     target_compile_options(launcher_generator PRIVATE /W3 /utf-8)
-    target_link_libraries(launcher_generator PRIVATE 
-        afxwin.lib 
-        afxcwd.lib 
-        afxcmn.lib
-    )
-    set_target_properties(launcher_generator PROPERTIES
-        LINK_FLAGS "/SUBSYSTEM:WINDOWS"
-    )
 endif()

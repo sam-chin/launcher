@@ -3,6 +3,9 @@ project(game_launcher CXX)
 
 set(CMAKE_CXX_STANDARD 11)
 
+# Enable MFC
+set(CMAKE_MFC_FLAG 2)  # 2 = MFC as shared DLL
+
 add_executable(game_launcher WIN32
     main.cpp
     config.c
@@ -27,18 +30,9 @@ target_link_libraries(game_launcher PRIVATE
 
 if(MSVC)
     target_compile_definitions(game_launcher PRIVATE 
-        _AFXDLL 
         _WIN32_WINNT=0x0601
         _UNICODE
         UNICODE
     )
     target_compile_options(game_launcher PRIVATE /W3 /utf-8)
-    target_link_libraries(game_launcher PRIVATE 
-        afxwin.lib 
-        afxcwd.lib 
-        afxcmn.lib
-    )
-    set_target_properties(game_launcher PROPERTIES
-        LINK_FLAGS "/SUBSYSTEM:WINDOWS"
-    )
 endif()
