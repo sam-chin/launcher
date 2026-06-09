@@ -31,7 +31,7 @@ private:
     void LoadServerList();
     void UpdatePatch();
     void LaunchGame();
-    void SetStatusText(const CString& text);
+    void SetStatusText(LPCTSTR text);
 
     LauncherConfig m_config;
     LoadedDll* m_loadedDlls;
@@ -80,26 +80,26 @@ BOOL CMainDlg::OnInitDialog() {
     m_progressBar.SetRange(0, 100);
     m_progressBar.SetPos(0);
 
-    SetStatusText(_T("Initializing..."));
+    SetStatusText(_T("初始化中..."));
     LoadServerList();
 
-    SetStatusText(_T("Ready"));
+    SetStatusText(_T("就绪"));
     return TRUE;
 }
 
 void CMainDlg::LoadServerList() {
     m_serverList.ResetContent();
     
-    m_serverList.AddString(_T("Server 1 - 192.168.1.100:7000 [Online]"));
-    m_serverList.AddString(_T("Server 2 - 192.168.1.101:7000 [Online]"));
-    m_serverList.AddString(_T("Server 3 - 192.168.1.102:7000 [Maintenance]"));
+    m_serverList.AddString(_T("服务器1 - 192.168.1.100:7000 [在线]"));
+    m_serverList.AddString(_T("服务器2 - 192.168.1.101:7000 [在线]"));
+    m_serverList.AddString(_T("服务器3 - 192.168.1.102:7000 [维护]"));
     
     m_serverList.SetCurSel(0);
     m_selectedServerIP = _T("192.168.1.100");
     m_selectedServerPort = 7000;
 }
 
-void CMainDlg::SetStatusText(const CString& text) {
+void CMainDlg::SetStatusText(LPCTSTR text) {
     m_statusText.SetWindowText(text);
 }
 
@@ -120,10 +120,10 @@ void CMainDlg::OnRegisterBtn() {
 }
 
 void CMainDlg::OnStartGame() {
-    SetStatusText(_T("Checking updates..."));
+    SetStatusText(_T("检查更新..."));
     UpdatePatch();
     
-    SetStatusText(_T("Starting game..."));
+    SetStatusText(_T("启动游戏..."));
     LaunchGame();
 }
 
@@ -141,12 +141,12 @@ void CMainDlg::UpdatePatch() {
             fread(data, 1, size, f);
             fclose(f);
             
-            SetStatusText(_T("Decrypting..."));
+            SetStatusText(_T("解密中..."));
             m_progressBar.SetPos(30);
             
             xor_decrypt(data, size, (const uint8_t*)m_config.patch_key, strlen(m_config.patch_key));
             
-            SetStatusText(_T("Unpacking..."));
+            SetStatusText(_T("解包中..."));
             m_progressBar.SetPos(60);
             
             FilePack* pack = file_pack_unpack(data, size);
@@ -160,7 +160,7 @@ void CMainDlg::UpdatePatch() {
                     *last_slash = '\0';
                 }
                 
-                SetStatusText(_T("Applying patch..."));
+                SetStatusText(_T("应用补丁..."));
                 m_progressBar.SetPos(80);
                 
                 file_pack_extract(pack, exe_path);
@@ -197,7 +197,7 @@ void CMainDlg::LaunchGame() {
     
     if (!CreateProcessA(client_full_path, args, NULL, NULL, FALSE, 
                         CREATE_SUSPENDED, NULL, exe_path, &si, &pi)) {
-        MessageBox(_T("Failed to start game!"), _T("Error"), MB_OK | MB_ICONERROR);
+        MessageBox(_T("启动游戏失败！"), _T("错误"), MB_OK | MB_ICONERROR);
         return;
     }
     
