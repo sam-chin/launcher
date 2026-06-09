@@ -104,7 +104,7 @@ void CMainDlg::InitChineseUI() {
     GetDlgItem(IDC_REGISTER_BTN)->SetWindowText(_T("注册"));
 
     GetDlgItem(1008)->SetWindowText(_T("公告"));
-    m_announcementText.SetWindowText(_T("欢迎使用游戏登录器！请选择服务器，然后点击"进入游戏"。"));
+    m_announcementText.SetWindowText(_T("欢迎使用游戏登录器！请选择服务器，然后点击「进入游戏」。"));
 
     GetDlgItem(1009)->SetWindowText(_T("服务器列表"));
     GetDlgItem(IDC_START_GAME)->SetWindowText(_T("进入游戏"));
