@@ -28,5 +28,8 @@ if(MSVC)
         _UNICODE
         UNICODE
     )
-    target_compile_options(launcher_generator PRIVATE /W3 /utf-8)
+    target_compile_options(launcher_generator PRIVATE 
+        /W3 
+        /utf-8
+    )
 endif()

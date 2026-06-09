@@ -24,6 +24,7 @@ protected:
     DECLARE_MESSAGE_MAP();
 
 private:
+    void InitChineseUI();
     void LoadConfigToUI();
     void SaveConfigFromUI();
 
@@ -41,7 +42,7 @@ private:
 CGeneratorApp theApp;
 
 BOOL CGeneratorApp::InitInstance() {
-    setlocale(LC_ALL, "Chinese");
+    setlocale(LC_ALL, "chs");
     CWinApp::InitInstance();
     CGeneratorDlg dlg;
     m_pMainWnd = &dlg;
@@ -63,44 +64,7 @@ CGeneratorDlg::CGeneratorDlg(CWnd* pParent) : CDialog(CGeneratorDlg::IDD, pParen
 BOOL CGeneratorDlg::OnInitDialog() {
     CDialog::OnInitDialog();
 
-    SetWindowText(_T("登录器生成器"));
-    
-    CWnd* pGroup = GetDlgItem(IDC_STATIC);
-    if (pGroup) pGroup->SetWindowText(_T("网页配置"));
-    
-    CWnd* pStatic = GetDlgItem(2001);
-    if (pStatic) pStatic->SetWindowText(_T("官网:"));
-    pStatic = GetDlgItem(2002);
-    if (pStatic) pStatic->SetWindowText(_T("充值:"));
-    pStatic = GetDlgItem(2003);
-    if (pStatic) pStatic->SetWindowText(_T("客服:"));
-    pStatic = GetDlgItem(2004);
-    if (pStatic) pStatic->SetWindowText(_T("注册:"));
-    
-    pGroup = GetDlgItem(2005);
-    if (pGroup) pGroup->SetWindowText(_T("补丁和服务器配置"));
-    
-    pStatic = GetDlgItem(2006);
-    if (pStatic) pStatic->SetWindowText(_T("服务器列表:"));
-    pStatic = GetDlgItem(2007);
-    if (pStatic) pStatic->SetWindowText(_T("补丁文件:"));
-    pStatic = GetDlgItem(2008);
-    if (pStatic) pStatic->SetWindowText(_T("补丁密钥:"));
-    
-    pGroup = GetDlgItem(2009);
-    if (pGroup) pGroup->SetWindowText(_T("客户端配置"));
-    
-    pStatic = GetDlgItem(2010);
-    if (pStatic) pStatic->SetWindowText(_T("客户端:"));
-    
-    CWnd* pBtn = GetDlgItem(IDC_SAVE_BTN);
-    if (pBtn) pBtn->SetWindowText(_T("保存配置"));
-    pBtn = GetDlgItem(IDC_LOAD_BTN);
-    if (pBtn) pBtn->SetWindowText(_T("加载配置"));
-    pBtn = GetDlgItem(IDC_GENERATE_BTN);
-    if (pBtn) pBtn->SetWindowText(_T("生成登录器"));
-    pBtn = GetDlgItem(IDC_OPEN_DIR_BTN);
-    if (pBtn) pBtn->SetWindowText(_T("打开目录"));
+    InitChineseUI();
 
     m_websiteEdit.SubclassDlgItem(IDC_WEBSITE_EDIT, this);
     m_rechargeEdit.SubclassDlgItem(IDC_RECHARGE_EDIT, this);
@@ -113,6 +77,29 @@ BOOL CGeneratorDlg::OnInitDialog() {
 
     LoadConfigToUI();
     return TRUE;
+}
+
+void CGeneratorDlg::InitChineseUI() {
+    SetWindowText(_T("登录器生成器"));
+
+    GetDlgItem(IDC_STATIC)->SetWindowText(_T("网页配置"));
+    GetDlgItem(2001)->SetWindowText(_T("官网:"));
+    GetDlgItem(2002)->SetWindowText(_T("充值:"));
+    GetDlgItem(2003)->SetWindowText(_T("客服:"));
+    GetDlgItem(2004)->SetWindowText(_T("注册:"));
+
+    GetDlgItem(2005)->SetWindowText(_T("补丁和服务器配置"));
+    GetDlgItem(2006)->SetWindowText(_T("服务器列表:"));
+    GetDlgItem(2007)->SetWindowText(_T("补丁文件:"));
+    GetDlgItem(2008)->SetWindowText(_T("补丁密钥:"));
+
+    GetDlgItem(2009)->SetWindowText(_T("客户端配置"));
+    GetDlgItem(2010)->SetWindowText(_T("客户端:"));
+
+    GetDlgItem(IDC_SAVE_BTN)->SetWindowText(_T("保存配置"));
+    GetDlgItem(IDC_LOAD_BTN)->SetWindowText(_T("加载配置"));
+    GetDlgItem(IDC_GENERATE_BTN)->SetWindowText(_T("生成登录器"));
+    GetDlgItem(IDC_OPEN_DIR_BTN)->SetWindowText(_T("打开目录"));
 }
 
 void CGeneratorDlg::LoadConfigToUI() {
