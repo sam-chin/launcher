@@ -3,7 +3,6 @@
 #include "resource.h"
 #include "../game_launcher/config.h"
 #include <shlobj.h>
-#include <locale.h>
 
 class CGeneratorApp : public CWinApp {
 public:
@@ -24,7 +23,6 @@ protected:
     DECLARE_MESSAGE_MAP();
 
 private:
-    void InitChineseUI();
     void LoadConfigToUI();
     void SaveConfigFromUI();
 
@@ -42,7 +40,6 @@ private:
 CGeneratorApp theApp;
 
 BOOL CGeneratorApp::InitInstance() {
-    setlocale(LC_ALL, "chs");
     CWinApp::InitInstance();
     CGeneratorDlg dlg;
     m_pMainWnd = &dlg;
@@ -64,7 +61,26 @@ CGeneratorDlg::CGeneratorDlg(CWnd* pParent) : CDialog(CGeneratorDlg::IDD, pParen
 BOOL CGeneratorDlg::OnInitDialog() {
     CDialog::OnInitDialog();
 
-    InitChineseUI();
+    SetWindowText(_T("Launcher Generator"));
+    
+    GetDlgItem(IDC_GROUPBOX1)->SetWindowText(_T("Website Configuration"));
+    GetDlgItem(IDC_LABEL_WEBSITE)->SetWindowText(_T("Website:"));
+    GetDlgItem(IDC_LABEL_RECHARGE)->SetWindowText(_T("Recharge:"));
+    GetDlgItem(IDC_LABEL_SUPPORT)->SetWindowText(_T("Support:"));
+    GetDlgItem(IDC_LABEL_REGISTER)->SetWindowText(_T("Register:"));
+    
+    GetDlgItem(IDC_GROUPBOX2)->SetWindowText(_T("Patch and Server Configuration"));
+    GetDlgItem(IDC_LABEL_SERVERLIST)->SetWindowText(_T("Server List:"));
+    GetDlgItem(IDC_LABEL_PATCH)->SetWindowText(_T("Patch File:"));
+    GetDlgItem(IDC_LABEL_PATCHKEY)->SetWindowText(_T("Patch Key:"));
+    
+    GetDlgItem(IDC_GROUPBOX3)->SetWindowText(_T("Client Configuration"));
+    GetDlgItem(IDC_LABEL_CLIENT)->SetWindowText(_T("Client:"));
+    
+    GetDlgItem(IDC_SAVE_BTN)->SetWindowText(_T("Save Config"));
+    GetDlgItem(IDC_LOAD_BTN)->SetWindowText(_T("Load Config"));
+    GetDlgItem(IDC_GENERATE_BTN)->SetWindowText(_T("Generate Launcher"));
+    GetDlgItem(IDC_OPEN_DIR_BTN)->SetWindowText(_T("Open Directory"));
 
     m_websiteEdit.SubclassDlgItem(IDC_WEBSITE_EDIT, this);
     m_rechargeEdit.SubclassDlgItem(IDC_RECHARGE_EDIT, this);
@@ -77,29 +93,6 @@ BOOL CGeneratorDlg::OnInitDialog() {
 
     LoadConfigToUI();
     return TRUE;
-}
-
-void CGeneratorDlg::InitChineseUI() {
-    SetWindowText(_T("登录器生成器"));
-
-    GetDlgItem(IDC_STATIC)->SetWindowText(_T("网页配置"));
-    GetDlgItem(2001)->SetWindowText(_T("官网:"));
-    GetDlgItem(2002)->SetWindowText(_T("充值:"));
-    GetDlgItem(2003)->SetWindowText(_T("客服:"));
-    GetDlgItem(2004)->SetWindowText(_T("注册:"));
-
-    GetDlgItem(2005)->SetWindowText(_T("补丁和服务器配置"));
-    GetDlgItem(2006)->SetWindowText(_T("服务器列表:"));
-    GetDlgItem(2007)->SetWindowText(_T("补丁文件:"));
-    GetDlgItem(2008)->SetWindowText(_T("补丁密钥:"));
-
-    GetDlgItem(2009)->SetWindowText(_T("客户端配置"));
-    GetDlgItem(2010)->SetWindowText(_T("客户端:"));
-
-    GetDlgItem(IDC_SAVE_BTN)->SetWindowText(_T("保存配置"));
-    GetDlgItem(IDC_LOAD_BTN)->SetWindowText(_T("加载配置"));
-    GetDlgItem(IDC_GENERATE_BTN)->SetWindowText(_T("生成登录器"));
-    GetDlgItem(IDC_OPEN_DIR_BTN)->SetWindowText(_T("打开目录"));
 }
 
 void CGeneratorDlg::LoadConfigToUI() {
@@ -157,16 +150,16 @@ void CGeneratorDlg::SaveConfigFromUI() {
 
 void CGeneratorDlg::OnSaveBtn() {
     SaveConfigFromUI();
-    MessageBox(_T("配置已保存！"), _T("信息"), MB_OK | MB_ICONINFORMATION);
+    MessageBox(_T("Config saved!"), _T("Info"), MB_OK | MB_ICONINFORMATION);
 }
 
 void CGeneratorDlg::OnLoadBtn() {
-    MessageBox(_T("加载配置功能需要实现！"), _T("信息"), MB_OK | MB_ICONINFORMATION);
+    MessageBox(_T("Load config feature needs implementation!"), _T("Info"), MB_OK | MB_ICONINFORMATION);
 }
 
 void CGeneratorDlg::OnGenerateBtn() {
     SaveConfigFromUI();
-    MessageBox(_T("生成登录器功能需要完整实现！"), _T("信息"), MB_OK | MB_ICONINFORMATION);
+    MessageBox(_T("Generate launcher feature needs implementation!"), _T("Info"), MB_OK | MB_ICONINFORMATION);
 }
 
 void CGeneratorDlg::OnOpenDirBtn() {

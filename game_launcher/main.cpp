@@ -6,7 +6,6 @@
 #include "dll_loader.h"
 #include "../common/file_pack/file_pack.h"
 #include "../common/encrypt/encrypt.h"
-#include <locale.h>
 
 class CLauncherApp : public CWinApp {
 public:
@@ -29,7 +28,6 @@ protected:
     DECLARE_MESSAGE_MAP();
 
 private:
-    void InitChineseUI();
     void LoadServerList();
     void UpdatePatch();
     void LaunchGame();
@@ -41,7 +39,6 @@ private:
     CListBox m_serverList;
     CProgressCtrl m_progressBar;
     CStatic m_statusText;
-    CStatic m_announcementText;
     CString m_selectedServerIP;
     int m_selectedServerPort;
 };
@@ -49,7 +46,6 @@ private:
 CLauncherApp theApp;
 
 BOOL CLauncherApp::InitInstance() {
-    setlocale(LC_ALL, "chs");
     CWinApp::InitInstance();
     CMainDlg dlg;
     m_pMainWnd = &dlg;
@@ -74,7 +70,16 @@ CMainDlg::CMainDlg(CWnd* pParent) : CDialog(CMainDlg::IDD, pParent) {
 BOOL CMainDlg::OnInitDialog() {
     CDialog::OnInitDialog();
 
-    InitChineseUI();
+    SetWindowText(_T("Game Launcher"));
+    GetDlgItem(IDC_GROUPBOX1)->SetWindowText(_T("Quick Links"));
+    GetDlgItem(IDC_WEBSITE_BTN)->SetWindowText(_T("Website"));
+    GetDlgItem(IDC_RECHARGE_BTN)->SetWindowText(_T("Recharge"));
+    GetDlgItem(IDC_SUPPORT_BTN)->SetWindowText(_T("Support"));
+    GetDlgItem(IDC_REGISTER_BTN)->SetWindowText(_T("Register"));
+    GetDlgItem(IDC_GROUPBOX2)->SetWindowText(_T("Announcement"));
+    GetDlgItem(IDC_ANNOUNCEMENT)->SetWindowText(_T("Welcome to Game Launcher! Please select a server and click 'Enter Game'."));
+    GetDlgItem(IDC_GROUPBOX3)->SetWindowText(_T("Server List"));
+    GetDlgItem(IDC_START_GAME)->SetWindowText(_T("Enter Game"));
 
     LoadDefaultConfig(&m_config);
     m_dllCount = LoadExtensionDlls(&m_config, &m_loadedDlls, MAX_DLL_COUNT);
@@ -82,40 +87,23 @@ BOOL CMainDlg::OnInitDialog() {
     m_serverList.SubclassDlgItem(IDC_SERVER_LIST, this);
     m_progressBar.SubclassDlgItem(IDC_PROGRESS_BAR, this);
     m_statusText.SubclassDlgItem(IDC_STATUS_TEXT, this);
-    m_announcementText.SubclassDlgItem(IDC_ANNOUNCEMENT, this);
 
     m_progressBar.SetRange(0, 100);
     m_progressBar.SetPos(0);
 
-    SetStatusText(_T("初始化中..."));
+    SetStatusText(_T("Initializing..."));
     LoadServerList();
 
-    SetStatusText(_T("就绪"));
+    SetStatusText(_T("Ready"));
     return TRUE;
-}
-
-void CMainDlg::InitChineseUI() {
-    SetWindowText(_T("游戏登录器"));
-
-    GetDlgItem(IDC_STATIC)->SetWindowText(_T("快捷功能"));
-    GetDlgItem(IDC_WEBSITE_BTN)->SetWindowText(_T("官网"));
-    GetDlgItem(IDC_RECHARGE_BTN)->SetWindowText(_T("充值"));
-    GetDlgItem(IDC_SUPPORT_BTN)->SetWindowText(_T("客服"));
-    GetDlgItem(IDC_REGISTER_BTN)->SetWindowText(_T("注册"));
-
-    GetDlgItem(1008)->SetWindowText(_T("公告"));
-    m_announcementText.SetWindowText(_T("欢迎使用游戏登录器！请选择服务器，然后点击「进入游戏」。"));
-
-    GetDlgItem(1009)->SetWindowText(_T("服务器列表"));
-    GetDlgItem(IDC_START_GAME)->SetWindowText(_T("进入游戏"));
 }
 
 void CMainDlg::LoadServerList() {
     m_serverList.ResetContent();
 
-    m_serverList.AddString(_T("服务器1 - 192.168.1.100:7000 [在线]"));
-    m_serverList.AddString(_T("服务器2 - 192.168.1.101:7000 [在线]"));
-    m_serverList.AddString(_T("服务器3 - 192.168.1.102:7000 [维护]"));
+    m_serverList.AddString(_T("Server 1 - 192.168.1.100:7000 [Online]"));
+    m_serverList.AddString(_T("Server 2 - 192.168.1.101:7000 [Online]"));
+    m_serverList.AddString(_T("Server 3 - 192.168.1.102:7000 [Maintenance]"));
 
     m_serverList.SetCurSel(0);
     m_selectedServerIP = _T("192.168.1.100");
@@ -143,10 +131,10 @@ void CMainDlg::OnRegisterBtn() {
 }
 
 void CMainDlg::OnStartGame() {
-    SetStatusText(_T("检查更新..."));
+    SetStatusText(_T("Checking update..."));
     UpdatePatch();
 
-    SetStatusText(_T("启动游戏..."));
+    SetStatusText(_T("Launching game..."));
     LaunchGame();
 }
 
@@ -164,12 +152,12 @@ void CMainDlg::UpdatePatch() {
             fread(data, 1, size, f);
             fclose(f);
 
-            SetStatusText(_T("解密中..."));
+            SetStatusText(_T("Decrypting..."));
             m_progressBar.SetPos(30);
 
             xor_decrypt(data, size, (const uint8_t*)m_config.patch_key, strlen(m_config.patch_key));
 
-            SetStatusText(_T("解包中..."));
+            SetStatusText(_T("Unpacking..."));
             m_progressBar.SetPos(60);
 
             FilePack* pack = file_pack_unpack(data, size);
@@ -183,7 +171,7 @@ void CMainDlg::UpdatePatch() {
                     *last_slash = '\0';
                 }
 
-                SetStatusText(_T("应用补丁..."));
+                SetStatusText(_T("Applying patch..."));
                 m_progressBar.SetPos(80);
 
                 file_pack_extract(pack, exe_path);
@@ -220,7 +208,7 @@ void CMainDlg::LaunchGame() {
 
     if (!CreateProcessA(client_full_path, args, NULL, NULL, FALSE,
                         CREATE_SUSPENDED, NULL, exe_path, &si, &pi)) {
-        MessageBox(_T("启动游戏失败！"), _T("错误"), MB_OK | MB_ICONERROR);
+        MessageBox(_T("Failed to launch game!"), _T("Error"), MB_OK | MB_ICONERROR);
         return;
     }
 
