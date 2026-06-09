@@ -27,6 +27,7 @@ target_link_libraries(game_launcher PRIVATE
     user32
     gdi32
     comctl32
+    shell32
 )
 
 if(MSVC)

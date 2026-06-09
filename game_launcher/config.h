@@ -38,6 +38,8 @@ typedef struct {
 } LauncherConfig;
 
 void LoadDefaultConfig(LauncherConfig* config);
+int SaveConfigToFile(const LauncherConfig* config, const char* file_path);
+int LoadConfigFromFile(LauncherConfig* config, const char* file_path);
 
 #ifdef __cplusplus
 }

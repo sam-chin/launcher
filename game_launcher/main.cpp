@@ -81,7 +81,19 @@ BOOL CMainDlg::OnInitDialog() {
     GetDlgItem(IDC_GROUPBOX3)->SetWindowText(_T("服务器列表"));
     GetDlgItem(IDC_START_GAME)->SetWindowText(_T("进入游戏"));
 
-    LoadDefaultConfig(&m_config);
+    char exe_path[MAX_PATH];
+    GetModuleFileNameA(NULL, exe_path, MAX_PATH);
+    char* last_slash = strrchr(exe_path, '\\');
+    if (last_slash) {
+        *last_slash = '\0';
+    }
+    char config_path[MAX_PATH * 2];
+    sprintf_s(config_path, sizeof(config_path), "%s\\launcher_config.ini", exe_path);
+
+    if (!LoadConfigFromFile(&m_config, config_path)) {
+        LoadDefaultConfig(&m_config);
+    }
+
     m_dllCount = LoadExtensionDlls(&m_config, &m_loadedDlls, MAX_DLL_COUNT);
 
     m_serverList.SubclassDlgItem(IDC_SERVER_LIST, this);
@@ -194,11 +206,15 @@ void CMainDlg::LaunchGame() {
     char client_full_path[MAX_PATH];
     sprintf_s(client_full_path, MAX_PATH, "%s\\%s", exe_path, m_config.client_path);
 
-    char args[1024];
-    CString ipStr = m_selectedServerIP;
-    CW2A ipStrA(ipStr);
-    sprintf_s(args, 1024, "ur;name=Player;ip=%s;port=%d;ra=163.com",
-              (LPCSTR)ipStrA, m_selectedServerPort);
+    char args[2048];
+    if (m_config.client_args && strlen(m_config.client_args) > 0) {
+        strncpy_s(args, sizeof(args), m_config.client_args, _TRUNCATE);
+    } else {
+        CString ipStr = m_selectedServerIP;
+        CW2A ipStrA(ipStr);
+        sprintf_s(args, sizeof(args), "ur;name=Player;ip=%s;port=%d;ra=163.com",
+                  (LPCSTR)ipStrA, m_selectedServerPort);
+    }
 
     STARTUPINFOA si;
     PROCESS_INFORMATION pi;
@@ -207,12 +223,11 @@ void CMainDlg::LaunchGame() {
     ZeroMemory(&pi, sizeof(pi));
 
     if (!CreateProcessA(client_full_path, args, NULL, NULL, FALSE,
-                        CREATE_SUSPENDED, NULL, exe_path, &si, &pi)) {
+                        0, NULL, exe_path, &si, &pi)) {
         MessageBox(_T("启动游戏失败！"), _T("错误"), MB_OK | MB_ICONERROR);
         return;
     }
 
-    ResumeThread(pi.hThread);
     CloseHandle(pi.hProcess);
     CloseHandle(pi.hThread);
 

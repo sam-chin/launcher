@@ -1,8 +1,8 @@
 #include <afxwin.h>
 #include <afxconv.h>
+#include <shlobj.h>
 #include "resource.h"
 #include "../game_launcher/config.h"
-#include <shlobj.h>
 
 class CGeneratorApp : public CWinApp {
 public:
@@ -25,6 +25,8 @@ protected:
 private:
     void LoadConfigToUI();
     void SaveConfigFromUI();
+    CStringA GetAppDirA();
+    BOOL CopyAssetFile(const CStringA& srcPath, const CStringA& destDir, const CStringA& fileName);
 
     LauncherConfig m_config;
     CEdit m_websiteEdit;
@@ -56,6 +58,30 @@ END_MESSAGE_MAP()
 
 CGeneratorDlg::CGeneratorDlg(CWnd* pParent) : CDialog(CGeneratorDlg::IDD, pParent) {
     LoadDefaultConfig(&m_config);
+}
+
+CStringA CGeneratorDlg::GetAppDirA() {
+    char exe_path[MAX_PATH];
+    GetModuleFileNameA(NULL, exe_path, MAX_PATH);
+    char* last_slash = strrchr(exe_path, '\\');
+    if (last_slash) {
+        *last_slash = '\0';
+    }
+    return CStringA(exe_path);
+}
+
+BOOL CGeneratorDlg::CopyAssetFile(const CStringA& srcPath, const CStringA& destDir, const CStringA& fileName) {
+    WIN32_FIND_DATAA findData;
+    HANDLE hFind = FindFirstFileA(srcPath, &findData);
+    if (hFind == INVALID_HANDLE_VALUE) {
+        return FALSE;
+    }
+    FindClose(hFind);
+
+    char destPath[MAX_PATH * 2];
+    sprintf_s(destPath, sizeof(destPath), "%s\\%s", destDir, fileName);
+
+    return ::CopyFileA(srcPath, destPath, FALSE);
 }
 
 BOOL CGeneratorDlg::OnInitDialog() {
@@ -91,7 +117,14 @@ BOOL CGeneratorDlg::OnInitDialog() {
     m_patchKeyEdit.SubclassDlgItem(IDC_PATCH_KEY_EDIT, this);
     m_clientEdit.SubclassDlgItem(IDC_CLIENT_EDIT, this);
 
+    CStringA appDir = GetAppDirA();
+    char configPath[MAX_PATH * 2];
+    sprintf_s(configPath, sizeof(configPath), "%s\\launcher_config.ini", (LPCSTR)appDir);
+    if (!LoadConfigFromFile(&m_config, configPath)) {
+        LoadDefaultConfig(&m_config);
+    }
     LoadConfigToUI();
+
     return TRUE;
 }
 
@@ -107,67 +140,131 @@ void CGeneratorDlg::LoadConfigToUI() {
 }
 
 void CGeneratorDlg::SaveConfigFromUI() {
-    CString websiteStr;
+    CString websiteStr, rechargeStr, supportStr, registerStr;
+    CString serverListStr, patchStr, patchKeyStr, clientStr;
+
     m_websiteEdit.GetWindowText(websiteStr);
-    CW2A websiteStrA(websiteStr);
-    strcpy_s(m_config.website_url, websiteStrA);
-
-    CString rechargeStr;
     m_rechargeEdit.GetWindowText(rechargeStr);
-    CW2A rechargeStrA(rechargeStr);
-    strcpy_s(m_config.recharge_url, rechargeStrA);
-
-    CString supportStr;
     m_supportEdit.GetWindowText(supportStr);
-    CW2A supportStrA(supportStr);
-    strcpy_s(m_config.support_url, supportStrA);
-
-    CString registerStr;
     m_registerEdit.GetWindowText(registerStr);
-    CW2A registerStrA(registerStr);
-    strcpy_s(m_config.register_url, registerStrA);
-
-    CString serverListStr;
     m_serverListEdit.GetWindowText(serverListStr);
-    CW2A serverListStrA(serverListStr);
-    strcpy_s(m_config.server_list_url, serverListStrA);
-
-    CString patchStr;
     m_patchEdit.GetWindowText(patchStr);
-    CW2A patchStrA(patchStr);
-    strcpy_s(m_config.local_patch_path, patchStrA);
-
-    CString patchKeyStr;
     m_patchKeyEdit.GetWindowText(patchKeyStr);
-    CW2A patchKeyStrA(patchKeyStr);
-    strcpy_s(m_config.patch_key, patchKeyStrA);
-
-    CString clientStr;
     m_clientEdit.GetWindowText(clientStr);
-    CW2A clientStrA(clientStr);
-    strcpy_s(m_config.client_path, clientStrA);
+
+    strncpy_s(m_config.website_url, MAX_URL_LEN, CT2CA(websiteStr), _TRUNCATE);
+    strncpy_s(m_config.recharge_url, MAX_URL_LEN, CT2CA(rechargeStr), _TRUNCATE);
+    strncpy_s(m_config.support_url, MAX_URL_LEN, CT2CA(supportStr), _TRUNCATE);
+    strncpy_s(m_config.register_url, MAX_URL_LEN, CT2CA(registerStr), _TRUNCATE);
+    strncpy_s(m_config.server_list_url, MAX_URL_LEN, CT2CA(serverListStr), _TRUNCATE);
+    strncpy_s(m_config.local_patch_path, MAX_PATH_LEN, CT2CA(patchStr), _TRUNCATE);
+    strncpy_s(m_config.patch_key, MAX_KEY_LEN, CT2CA(patchKeyStr), _TRUNCATE);
+    strncpy_s(m_config.client_path, MAX_PATH_LEN, CT2CA(clientStr), _TRUNCATE);
 }
 
 void CGeneratorDlg::OnSaveBtn() {
     SaveConfigFromUI();
-    MessageBox(_T("配置已保存！"), _T("信息"), MB_OK | MB_ICONINFORMATION);
+
+    CStringA appDir = GetAppDirA();
+    char configPath[MAX_PATH * 2];
+    sprintf_s(configPath, sizeof(configPath), "%s\\launcher_config.ini", (LPCSTR)appDir);
+
+    if (SaveConfigToFile(&m_config, configPath)) {
+        MessageBox(_T("配置已保存到 launcher_config.ini！"), _T("成功"),
+                   MB_OK | MB_ICONINFORMATION);
+    } else {
+        MessageBox(_T("保存配置失败！请检查目录权限。"), _T("错误"),
+                   MB_OK | MB_ICONERROR);
+    }
 }
 
 void CGeneratorDlg::OnLoadBtn() {
-    MessageBox(_T("加载配置功能需要实现！"), _T("信息"), MB_OK | MB_ICONINFORMATION);
+    CStringA appDir = GetAppDirA();
+    char configPath[MAX_PATH * 2];
+    sprintf_s(configPath, sizeof(configPath), "%s\\launcher_config.ini", (LPCSTR)appDir);
+
+    if (LoadConfigFromFile(&m_config, configPath)) {
+        LoadConfigToUI();
+        MessageBox(_T("已从 launcher_config.ini 加载配置！"), _T("成功"),
+                   MB_OK | MB_ICONINFORMATION);
+    } else {
+        LoadDefaultConfig(&m_config);
+        LoadConfigToUI();
+        MessageBox(_T("未找到 launcher_config.ini，已加载默认配置。"),
+                   _T("提示"), MB_OK | MB_ICONINFORMATION);
+    }
 }
 
 void CGeneratorDlg::OnGenerateBtn() {
     SaveConfigFromUI();
-    MessageBox(_T("生成登录器功能需要完整实现！"), _T("信息"), MB_OK | MB_ICONINFORMATION);
+
+    CStringA appDir = GetAppDirA();
+
+    BROWSEINFOA bi;
+    ZeroMemory(&bi, sizeof(bi));
+    char displayName[MAX_PATH];
+    bi.hwndOwner = m_hWnd;
+    bi.pszDisplayName = displayName;
+    bi.lpszTitle = "请选择登录器输出目录";
+    bi.ulFlags = BIF_RETURNONLYFSDIRS | BIF_NEWDIALOGSTYLE;
+
+    LPITEMIDLIST pidl = SHBrowseForFolderA(&bi);
+    if (!pidl) {
+        return;
+    }
+
+    char selectedPath[MAX_PATH];
+    if (!SHGetPathFromIDListA(pidl, selectedPath)) {
+        CoTaskMemFree(pidl);
+        MessageBox(_T("获取目录失败！"), _T("错误"), MB_OK | MB_ICONERROR);
+        return;
+    }
+    CoTaskMemFree(pidl);
+
+    CStringA outputDir(selectedPath);
+    if (outputDir.IsEmpty()) {
+        MessageBox(_T("未选择输出目录！"), _T("错误"), MB_OK | MB_ICONERROR);
+        return;
+    }
+
+    char configOutputPath[MAX_PATH * 2];
+    sprintf_s(configOutputPath, sizeof(configOutputPath),
+              "%s\\launcher_config.ini", (LPCSTR)outputDir);
+
+    if (!SaveConfigToFile(&m_config, configOutputPath)) {
+        MessageBox(_T("写入配置文件到输出目录失败！请检查目录权限。"),
+                   _T("错误"), MB_OK | MB_ICONERROR);
+        return;
+    }
+
+    CStringA srcLauncher;
+    srcLauncher.Format("%s\\game_launcher.exe", (LPCSTR)appDir);
+    BOOL copiedLauncher = CopyAssetFile(srcLauncher, outputDir, "game_launcher.exe");
+
+    CStringA srcGenerator;
+    srcGenerator.Format("%s\\launcher_generator.exe", (LPCSTR)appDir);
+    CopyAssetFile(srcGenerator, outputDir, "launcher_generator.exe");
+
+    CStringA srcEncrypt;
+    srcEncrypt.Format("%s\\encrypt_tool.exe", (LPCSTR)appDir);
+    CopyAssetFile(srcEncrypt, outputDir, "encrypt_tool.exe");
+
+    CStringA srcPlugin;
+    srcPlugin.Format("%s\\plugin.dll", (LPCSTR)appDir);
+    CopyAssetFile(srcPlugin, outputDir, "plugin.dll");
+
+    CString msg;
+    msg.Format(_T("登录器已生成到：\n%s\n\n包含文件:\n- launcher_config.ini (你的配置)%s%s%s%s"),
+               CString(outputDir),
+               copiedLauncher ? _T("\n- game_launcher.exe (主程序)") : _T("\n- [警告] game_launcher.exe 未找到"),
+               _T("\n- launcher_generator.exe (生成工具)"),
+               _T("\n- encrypt_tool.exe (补丁加密工具)"),
+               _T("\n- plugin.dll (扩展插件)"));
+
+    MessageBox(msg, _T("完成"), MB_OK | MB_ICONINFORMATION);
 }
 
 void CGeneratorDlg::OnOpenDirBtn() {
-    char exe_path[MAX_PATH];
-    GetModuleFileNameA(NULL, exe_path, MAX_PATH);
-    char* last_slash = strrchr(exe_path, '\\');
-    if (last_slash) {
-        *last_slash = '\0';
-    }
-    ShellExecuteA(NULL, "open", exe_path, NULL, NULL, SW_SHOWNORMAL);
+    CStringA appDir = GetAppDirA();
+    ShellExecuteA(m_hWnd, "open", (LPCSTR)appDir, NULL, NULL, SW_SHOWNORMAL);
 }
