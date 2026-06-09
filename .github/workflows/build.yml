@@ -22,8 +22,8 @@ jobs:
     - name: Build
       run: cmake --build build --config Release
 
-    - name: Upload artifacts
+    - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: game_launcher_build
+        name: game_launcher_release
         path: build/bin/

@@ -17,8 +17,9 @@ target_include_directories(encrypt_tool PRIVATE
 )
 
 if(MSVC)
-    target_compile_definitions(encrypt_tool PRIVATE 
+    target_compile_definitions(encrypt_tool PRIVATE
         _WIN32_WINNT=0x0601
     )
-    target_compile_options(encrypt_tool PRIVATE /W3 /source-charset:GB2312 /execution-charset:GB2312)
+    target_compile_options(encrypt_tool PRIVATE /W3)
+    target_compile_options(encrypt_tool PRIVATE "$<$<C_COMPILER_ID:MSVC>:/utf-8>")
 endif()

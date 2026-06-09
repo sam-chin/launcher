@@ -1,7 +1,8 @@
 cmake_minimum_required(VERSION 3.10)
 project(game_launcher CXX)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Enable MFC
 set(CMAKE_MFC_FLAG 2)  # 2 = MFC as shared DLL
@@ -29,13 +30,12 @@ target_link_libraries(game_launcher PRIVATE
 )
 
 if(MSVC)
-    target_compile_definitions(game_launcher PRIVATE 
+    target_compile_definitions(game_launcher PRIVATE
         _WIN32_WINNT=0x0601
         _UNICODE
         UNICODE
+        _AFXDLL
     )
-    target_compile_options(game_launcher PRIVATE 
-        /W3 
-        /utf-8
-    )
+    target_compile_options(game_launcher PRIVATE /W3)
+    target_compile_options(game_launcher PRIVATE "$<$<CXX_COMPILER_ID:MSVC>:/utf-8>")
 endif()

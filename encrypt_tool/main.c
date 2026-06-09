@@ -5,10 +5,24 @@
 #include "../common/file_pack/file_pack.h"
 #include "../common/encrypt/encrypt.h"
 
-static void set_console_encoding() {
-    SetConsoleCP(936);
-    SetConsoleOutputCP(936);
+static void console_out(const char* utf8_text) {
+    int len = MultiByteToWideChar(CP_UTF8, 0, utf8_text, -1, NULL, 0);
+    if (len > 0) {
+        wchar_t* wbuf = (wchar_t*)malloc(sizeof(wchar_t) * len);
+        if (wbuf) {
+            MultiByteToWideChar(CP_UTF8, 0, utf8_text, -1, wbuf, len);
+            DWORD written;
+            WriteConsoleW(GetStdHandle(STD_OUTPUT_HANDLE), wbuf, len - 1, &written, NULL);
+            free(wbuf);
+        }
+    }
 }
+
+#define PRINT(...) do { \
+    char _buf[4096]; \
+    snprintf(_buf, sizeof(_buf), __VA_ARGS__); \
+    console_out(_buf); \
+} while(0)
 
 static int is_directory(const char* path) {
     DWORD attrs = GetFileAttributesA(path);
@@ -16,30 +30,30 @@ static int is_directory(const char* path) {
 }
 
 static void print_usage(const char* prog_name) {
-    printf("用法:\n");
-    printf("  交互模式: %s\n", prog_name);
-    printf("  命令模式: %s <源路径> <输出文件> <密钥>\n", prog_name);
-    printf("\n示例:\n");
-    printf("  %s\n", prog_name);
-    printf("  %s patch_dir patch.pack mysecretkey\n", prog_name);
+    PRINT("用法:\n");
+    PRINT("  交互模式: %s\n", prog_name);
+    PRINT("  命令模式: %s <源路径> <输出文件> <密钥>\n", prog_name);
+    PRINT("\n示例:\n");
+    PRINT("  %s\n", prog_name);
+    PRINT("  %s patch_dir patch.pack mysecretkey\n", prog_name);
 }
 
 static int encrypt_and_save(const char* source_path, const char* output_path, const char* key) {
-    printf("正在处理...\n");
-    
+    PRINT("正在处理...\n");
+
     FilePack* pack = file_pack_create();
     if (!pack) {
-        printf("错误: 无法创建打包对象\n");
+        PRINT("错误: 无法创建打包对象\n");
         return 0;
     }
-    
+
     if (is_directory(source_path)) {
-        printf("添加目录: %s\n", source_path);
+        PRINT("添加目录: %s\n", source_path);
         if (!file_pack_add_directory(pack, source_path)) {
-            printf("警告: 部分文件可能添加失败\n");
+            PRINT("警告: 部分文件可能添加失败\n");
         }
     } else {
-        printf("添加文件: %s\n", source_path);
+        PRINT("添加文件: %s\n", source_path);
         char base_dir[MAX_PATH];
         strcpy_s(base_dir, MAX_PATH, source_path);
         char* last_slash = strrchr(base_dir, '\\');
@@ -49,52 +63,52 @@ static int encrypt_and_save(const char* source_path, const char* output_path, co
             base_dir[0] = '\0';
         }
         if (!file_pack_add_file(pack, source_path, base_dir)) {
-            printf("错误: 无法添加文件\n");
+            PRINT("错误: 无法添加文件\n");
             file_pack_destroy(pack);
             return 0;
         }
     }
-    
+
     if (pack->entry_count == 0) {
-        printf("错误: 未找到文件\n");
+        PRINT("错误: 未找到文件\n");
         file_pack_destroy(pack);
         return 0;
     }
-    
-    printf("文件数量: %zu\n", pack->entry_count);
-    
+
+    PRINT("文件数量: %zu\n", pack->entry_count);
+
     size_t pack_size;
     uint8_t* pack_data = file_pack_pack(pack, &pack_size);
     file_pack_destroy(pack);
-    
+
     if (!pack_data) {
-        printf("错误: 打包失败\n");
+        PRINT("错误: 打包失败\n");
         return 0;
     }
-    
-    printf("打包大小: %zu 字节\n", pack_size);
-    
-    printf("正在加密...\n");
+
+    PRINT("打包大小: %zu 字节\n", pack_size);
+
+    PRINT("正在加密...\n");
     xor_encrypt(pack_data, pack_size, (const uint8_t*)key, strlen(key));
-    
-    FILE* f = fopen(output_path, "wb");
-    if (!f) {
-        printf("错误: 无法创建输出文件\n");
+
+    FILE* f = NULL;
+    if (fopen_s(&f, output_path, "wb") != 0 || !f) {
+        PRINT("错误: 无法创建输出文件\n");
         free(pack_data);
         return 0;
     }
-    
+
     size_t written = fwrite(pack_data, 1, pack_size, f);
     fclose(f);
     free(pack_data);
-    
+
     if (written != pack_size) {
-        printf("错误: 文件写入失败\n");
+        PRINT("错误: 文件写入失败\n");
         return 0;
     }
-    
-    printf("加密完成!\n");
-    printf("输出文件: %s\n", output_path);
+
+    PRINT("加密完成!\n");
+    PRINT("输出文件: %s\n", output_path);
     return 1;
 }
 
@@ -102,28 +116,28 @@ static void interactive_mode() {
     char source_path[MAX_PATH];
     char output_path[MAX_PATH];
     char key[256];
-    
-    printf("=== 加密工具 ===\n\n");
-    
-    printf("请输入源路径(文件或目录): ");
+
+    PRINT("=== 加密工具 ===\n\n");
+
+    PRINT("请输入源路径(文件或目录): ");
     fgets(source_path, MAX_PATH, stdin);
     source_path[strcspn(source_path, "\r\n")] = '\0';
-    
-    printf("请输入输出文件路径: ");
+
+    PRINT("请输入输出文件路径: ");
     fgets(output_path, MAX_PATH, stdin);
     output_path[strcspn(output_path, "\r\n")] = '\0';
-    
-    printf("请输入加密密钥: ");
+
+    PRINT("请输入加密密钥: ");
     fgets(key, 256, stdin);
     key[strcspn(key, "\r\n")] = '\0';
-    
-    printf("\n");
+
+    PRINT("\n");
     encrypt_and_save(source_path, output_path, key);
 }
 
 int main(int argc, char* argv[]) {
-    set_console_encoding();
-    
+    SetConsoleOutputCP(CP_UTF8);
+
     if (argc == 1) {
         interactive_mode();
     } else if (argc == 4) {
@@ -134,6 +148,6 @@ int main(int argc, char* argv[]) {
         print_usage(argv[0]);
         return 1;
     }
-    
+
     return 0;
 }
