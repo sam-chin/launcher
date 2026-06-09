@@ -20,7 +20,7 @@ protected:
     afx_msg void OnLoadBtn();
     afx_msg void OnGenerateBtn();
     afx_msg void OnOpenDirBtn();
-    DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP();
 
 private:
     void LoadConfigToUI();
@@ -86,35 +86,43 @@ void CGeneratorDlg::LoadConfigToUI() {
 }
 
 void CGeneratorDlg::SaveConfigFromUI() {
-    CString websiteStr = m_websiteEdit.GetWindowText();
+    CString websiteStr;
+    m_websiteEdit.GetWindowText(websiteStr);
     CW2A websiteStrA(websiteStr);
     strcpy_s(m_config.website_url, websiteStrA);
 
-    CString rechargeStr = m_rechargeEdit.GetWindowText();
+    CString rechargeStr;
+    m_rechargeEdit.GetWindowText(rechargeStr);
     CW2A rechargeStrA(rechargeStr);
     strcpy_s(m_config.recharge_url, rechargeStrA);
 
-    CString supportStr = m_supportEdit.GetWindowText();
+    CString supportStr;
+    m_supportEdit.GetWindowText(supportStr);
     CW2A supportStrA(supportStr);
     strcpy_s(m_config.support_url, supportStrA);
 
-    CString registerStr = m_registerEdit.GetWindowText();
+    CString registerStr;
+    m_registerEdit.GetWindowText(registerStr);
     CW2A registerStrA(registerStr);
     strcpy_s(m_config.register_url, registerStrA);
 
-    CString serverListStr = m_serverListEdit.GetWindowText();
+    CString serverListStr;
+    m_serverListEdit.GetWindowText(serverListStr);
     CW2A serverListStrA(serverListStr);
     strcpy_s(m_config.server_list_url, serverListStrA);
 
-    CString patchStr = m_patchEdit.GetWindowText();
+    CString patchStr;
+    m_patchEdit.GetWindowText(patchStr);
     CW2A patchStrA(patchStr);
     strcpy_s(m_config.local_patch_path, patchStrA);
 
-    CString patchKeyStr = m_patchKeyEdit.GetWindowText();
+    CString patchKeyStr;
+    m_patchKeyEdit.GetWindowText(patchKeyStr);
     CW2A patchKeyStrA(patchKeyStr);
     strcpy_s(m_config.patch_key, patchKeyStrA);
 
-    CString clientStr = m_clientEdit.GetWindowText();
+    CString clientStr;
+    m_clientEdit.GetWindowText(clientStr);
     CW2A clientStrA(clientStr);
     strcpy_s(m_config.client_path, clientStrA);
 }
