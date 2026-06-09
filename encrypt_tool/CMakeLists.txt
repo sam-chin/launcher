@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 project(encrypt_tool C)
 
-set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)
 
 add_executable(encrypt_tool
     main.c
@@ -17,7 +17,8 @@ target_include_directories(encrypt_tool PRIVATE
 )
 
 if(MSVC)
-    target_compile_definitions(encrypt_tool PRIVATE _WIN32_WINNT=0x0601)
-    target_compile_options(encrypt_tool PRIVATE /W3 /utf-8)
-    set_source_files_properties(main.c PROPERTIES COMPILE_OPTIONS "/utf-8")
+    target_compile_definitions(encrypt_tool PRIVATE 
+        _WIN32_WINNT=0x0601
+    )
+    target_compile_options(encrypt_tool PRIVATE /W3 /source-charset:GB2312 /execution-charset:GB2312)
 endif()
