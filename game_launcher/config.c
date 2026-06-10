@@ -25,6 +25,7 @@ void LoadDefaultConfig(LauncherConfig* config) {
 
     strcpy_s(config->client_path, MAX_PATH_LEN, "client.exe");
     strcpy_s(config->client_args, MAX_PATH_LEN, "");
+    strcpy_s(config->inject_dll_path, MAX_PATH_LEN, "inject.dll");
 
     config->dll_count = 0;
 }
@@ -76,6 +77,7 @@ int SaveConfigToFile(const LauncherConfig* config, const char* file_path) {
 
     write_ini_string(f, "client_path", config->client_path);
     write_ini_string(f, "client_args", config->client_args);
+    write_ini_string(f, "inject_dll_path", config->inject_dll_path);
 
     write_ini_int(f, "dll_count", config->dll_count);
     for (int i = 0; i < config->dll_count && i < MAX_DLL_COUNT; i++) {
@@ -144,6 +146,8 @@ int LoadConfigFromFile(LauncherConfig* config, const char* file_path) {
             strncpy_s(config->client_path, MAX_PATH_LEN, value, _TRUNCATE);
         } else if (strcmp(key, "client_args") == 0) {
             strncpy_s(config->client_args, MAX_PATH_LEN, value, _TRUNCATE);
+        } else if (strcmp(key, "inject_dll_path") == 0) {
+            strncpy_s(config->inject_dll_path, MAX_PATH_LEN, value, _TRUNCATE);
         } else if (strcmp(key, "dll_count") == 0) {
             config->dll_count = atoi(value);
             if (config->dll_count > MAX_DLL_COUNT) config->dll_count = MAX_DLL_COUNT;

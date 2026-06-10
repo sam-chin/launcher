@@ -28,6 +28,7 @@ target_link_libraries(game_launcher PRIVATE
     gdi32
     comctl32
     shell32
+    wininet
 )
 
 if(MSVC)

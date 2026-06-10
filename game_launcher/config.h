@@ -32,7 +32,8 @@ typedef struct {
     
     char client_path[MAX_PATH_LEN];
     char client_args[MAX_PATH_LEN];
-    
+    char inject_dll_path[MAX_PATH_LEN];
+
     char dll_paths[MAX_DLL_COUNT][MAX_PATH_LEN];
     int dll_count;
 } LauncherConfig;

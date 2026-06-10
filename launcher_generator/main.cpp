@@ -37,6 +37,7 @@ private:
     CEdit m_patchEdit;
     CEdit m_patchKeyEdit;
     CEdit m_clientEdit;
+    CEdit m_injectDllEdit;
 };
 
 CGeneratorApp theApp;
@@ -102,6 +103,7 @@ BOOL CGeneratorDlg::OnInitDialog() {
 
     GetDlgItem(IDC_GROUPBOX3)->SetWindowText(_T("客户端配置"));
     GetDlgItem(IDC_LABEL_CLIENT)->SetWindowText(_T("客户端:"));
+    GetDlgItem(IDC_LABEL_INJECT_DLL)->SetWindowText(_T("注入DLL:"));
 
     GetDlgItem(IDC_SAVE_BTN)->SetWindowText(_T("保存配置"));
     GetDlgItem(IDC_LOAD_BTN)->SetWindowText(_T("加载配置"));
@@ -116,6 +118,7 @@ BOOL CGeneratorDlg::OnInitDialog() {
     m_patchEdit.SubclassDlgItem(IDC_PATCH_EDIT, this);
     m_patchKeyEdit.SubclassDlgItem(IDC_PATCH_KEY_EDIT, this);
     m_clientEdit.SubclassDlgItem(IDC_CLIENT_EDIT, this);
+    m_injectDllEdit.SubclassDlgItem(IDC_INJECT_DLL_EDIT, this);
 
     CStringA appDir = GetAppDirA();
     char configPath[MAX_PATH * 2];
@@ -137,11 +140,12 @@ void CGeneratorDlg::LoadConfigToUI() {
     m_patchEdit.SetWindowText(CString(m_config.local_patch_path));
     m_patchKeyEdit.SetWindowText(CString(m_config.patch_key));
     m_clientEdit.SetWindowText(CString(m_config.client_path));
+    m_injectDllEdit.SetWindowText(CString(m_config.inject_dll_path));
 }
 
 void CGeneratorDlg::SaveConfigFromUI() {
     CString websiteStr, rechargeStr, supportStr, registerStr;
-    CString serverListStr, patchStr, patchKeyStr, clientStr;
+    CString serverListStr, patchStr, patchKeyStr, clientStr, injectDllStr;
 
     m_websiteEdit.GetWindowText(websiteStr);
     m_rechargeEdit.GetWindowText(rechargeStr);
@@ -151,6 +155,7 @@ void CGeneratorDlg::SaveConfigFromUI() {
     m_patchEdit.GetWindowText(patchStr);
     m_patchKeyEdit.GetWindowText(patchKeyStr);
     m_clientEdit.GetWindowText(clientStr);
+    m_injectDllEdit.GetWindowText(injectDllStr);
 
     strncpy_s(m_config.website_url, MAX_URL_LEN, CT2CA(websiteStr), _TRUNCATE);
     strncpy_s(m_config.recharge_url, MAX_URL_LEN, CT2CA(rechargeStr), _TRUNCATE);
@@ -160,6 +165,7 @@ void CGeneratorDlg::SaveConfigFromUI() {
     strncpy_s(m_config.local_patch_path, MAX_PATH_LEN, CT2CA(patchStr), _TRUNCATE);
     strncpy_s(m_config.patch_key, MAX_KEY_LEN, CT2CA(patchKeyStr), _TRUNCATE);
     strncpy_s(m_config.client_path, MAX_PATH_LEN, CT2CA(clientStr), _TRUNCATE);
+    strncpy_s(m_config.inject_dll_path, MAX_PATH_LEN, CT2CA(injectDllStr), _TRUNCATE);
 }
 
 void CGeneratorDlg::OnSaveBtn() {
