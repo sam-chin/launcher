@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Enable MFC
-set(CMAKE_MFC_FLAG 2)  # 2 = MFC as shared DLL
+set(CMAKE_MFC_FLAG 1)  # 1 = MFC as static library
 
 add_executable(game_launcher WIN32
     main.cpp

@@ -247,25 +247,26 @@ void CGeneratorDlg::OnGenerateBtn() {
     srcLauncher.Format("%s\\game_launcher.exe", (LPCSTR)appDir);
     BOOL copiedLauncher = CopyAssetFile(srcLauncher, outputDir, "game_launcher.exe");
 
-    CStringA srcGenerator;
-    srcGenerator.Format("%s\\launcher_generator.exe", (LPCSTR)appDir);
-    CopyAssetFile(srcGenerator, outputDir, "launcher_generator.exe");
-
-    CStringA srcEncrypt;
-    srcEncrypt.Format("%s\\encrypt_tool.exe", (LPCSTR)appDir);
-    CopyAssetFile(srcEncrypt, outputDir, "encrypt_tool.exe");
-
     CStringA srcPlugin;
     srcPlugin.Format("%s\\plugin.dll", (LPCSTR)appDir);
-    CopyAssetFile(srcPlugin, outputDir, "plugin.dll");
+    BOOL copiedPlugin = CopyAssetFile(srcPlugin, outputDir, "plugin.dll");
 
     CString msg;
-    msg.Format(_T("登录器已生成到：\n%s\n\n包含文件:\n- launcher_config.ini (你的配置)%s%s%s%s"),
-               CString(outputDir),
-               copiedLauncher ? _T("\n- game_launcher.exe (主程序)") : _T("\n- [警告] game_launcher.exe 未找到"),
-               _T("\n- launcher_generator.exe (生成工具)"),
-               _T("\n- encrypt_tool.exe (补丁加密工具)"),
-               _T("\n- plugin.dll (扩展插件)"));
+    msg.Format(_T("登录器已生成到：\n%s\n\n包含文件:"), CString(outputDir));
+    
+    if (copiedLauncher) {
+        msg += _T("\n- game_launcher.exe (主程序)");
+    } else {
+        msg += _T("\n- [警告] game_launcher.exe 未找到！请确保工具与 game_launcher.exe 在同一目录");
+    }
+    
+    msg += _T("\n- launcher_config.ini (配置文件)");
+    
+    if (copiedPlugin) {
+        msg += _T("\n- plugin.dll (扩展插件)");
+    }
+
+    msg += _T("\n\n使用说明:\n1. 将注入DLL（如 inject.dll）复制到登录器目录\n2. 双击 game_launcher.exe 启动登录器\n3. 登录器会自动读取 launcher_config.ini 配置");
 
     MessageBox(msg, _T("完成"), MB_OK | MB_ICONINFORMATION);
 }
